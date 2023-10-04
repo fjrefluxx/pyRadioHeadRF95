@@ -80,6 +80,39 @@ void _setCodingRate4(int8_t denominator) {
 	radio.setCodingRate4(denominator);
 }
 
+void _setSyncWord(uint8_t syncWord) {
+	radio.setSyncWord(syncWord);
+}
+
+void _setExplicitHeaderMode(uint8_t mode) {
+	radio.setExplicitHeaderMode(mode);
+}
+
+void _setImplicitHeaderMode(bool on, uint8_t expectedPayloadLength) {
+	radio.setImplicitHeaderMode(on, expectedPayloadLength);
+}
+
+void _setThisAddress(uint8_t thisAddress) {
+	radio.setThisAddress(thisAddress);
+}
+
+void _setTXHeaderTo(uint8_t txHeaderTo) {
+	radio.setHeaderTo(txHeaderTo);
+}
+
+void _setTXHeaderFrom(uint8_t txHeaderFrom) {
+	radio.setHeaderFrom(txHeaderFrom);
+}
+
+void _setTXHeaderID(uint8_t txHeaderID) {
+	radio.setHeaderId(txHeaderID);
+}
+
+void _setTXHeaderFlags(uint8_t txHeaderFlags, uint8_t flagsToClear) {
+	radio.setHeaderFlags(txHeaderFlags, flagsToClear);
+}
+	
+
 int _send(uint8_t* data, uint8_t len) {
 	bool b = radio.send(data, len);
 	if (b) return 0;
@@ -108,13 +141,13 @@ int _available() {
 }
 
 int _recv(char* buf, uint8_t* len) {
-	uint8_t buf2[RH_RF95_MAX_MESSAGE_LEN];
+	uint8_t buf2[radio.getMaxMessageLength()];
 	uint8_t len2 = sizeof(buf2);
 	
 	bool b = radio.recv(buf2, &len2);
 	//printf("Received : %s (%d)\n", (char*)buf2, len2);
 
-	strcpy(buf, (char*)buf2);
+	memcpy(buf, buf2, len2);
 	//buf[(int)len2] = 0;
 	*len = len2; 	
 
@@ -151,7 +184,7 @@ int _managerInit(int address) {
 }
 
 int _recvfromAck(char* buf, uint8_t* len, uint8_t* from) {
-	uint8_t buf2[RH_RF95_MAX_MESSAGE_LEN];
+	uint8_t buf2[radio.getMaxMessageLength()];
 	uint8_t len2 = sizeof(buf2);
 	uint8_t from2;
 		
@@ -166,7 +199,7 @@ int _recvfromAck(char* buf, uint8_t* len, uint8_t* from) {
 }
 
 int _recvfromAckTimeout(char* buf, uint8_t* len, uint16_t timeout, uint8_t* from) {
-	uint8_t buf2[RH_RF95_MAX_MESSAGE_LEN];
+	uint8_t buf2[radio.getMaxMessageLength()];
 	uint8_t len2 = sizeof(buf2);
 	uint8_t from2;
 
@@ -230,6 +263,13 @@ int _setModeRx() {
 	return 0;
 }
 
+int _lastSNR(){
+	return radio.lastSNR();
+}
+
+int _lastRssi(){
+	return radio.lastRssi();
+}
 
 extern "C" {
         extern int init() {
@@ -254,6 +294,38 @@ extern "C" {
 
 	extern void setCodingRate4(int8_t denominator) {
 		_setCodingRate4(denominator);
+	}
+
+	extern void setSyncWord(uint8_t syncWord) {
+		_setSyncWord(syncWord);
+	}
+
+	extern void setExplicitHeaderMode(uint8_t mode) {
+		_setExplicitHeaderMode(mode);
+	}
+
+	extern void setImplicitHeaderMode(bool on, uint8_t expectedPayloadLength) {
+		_setImplicitHeaderMode(on, expectedPayloadLength);
+	}
+
+	extern void setThisAddress(uint8_t thisAddress) {
+		_setThisAddress(thisAddress);
+	}
+
+	extern void setTXHeaderTo(uint8_t txHeaderTo) {
+		_setTXHeaderTo(txHeaderTo);
+	}
+		
+	extern void setTXHeaderFrom(uint8_t txHeaderFrom) {
+		_setTXHeaderFrom(txHeaderFrom);
+	}
+
+	extern void setTXHeaderID(uint8_t txHeaderID) {
+		_setTXHeaderID(txHeaderID);
+	}
+
+	extern void setTXHeaderFlags(uint8_t txHeaderFlags, uint8_t flagsToClear) {
+		_setTXHeaderFlags(txHeaderFlags, flagsToClear);
 	}
 
 	extern int send(uint8_t* data, uint8_t len) {
@@ -334,5 +406,73 @@ extern "C" {
 	
 	extern int setModeRx() {
 		return _setModeRx();
+	}
+	
+	int lastSNR(){
+		return _lastSNR();
+	}
+	
+	int lastRssi(){
+		return _lastRssi();
+	}
+	
+	bool isChannelActive(){
+		return radio.isChannelActive();
+	}
+	
+	int frequencyError() {
+		return radio.frequencyError();
+	}
+	
+	int getLastRawRssi(){
+		return radio.getLastRawRssi();
+	}
+
+	int getSyncWord(){
+		return radio.getSyncWord();
+	}
+
+	int getExplicitHeaderMode() {
+		return radio.getExplicitHeaderMode();
+	}
+
+	bool getImplicitHeaderMode() {
+		return radio.getImplicitHeaderMode();
+	}
+
+	int getThisAddress() {
+		return radio.thisAddress();
+	}
+
+	int getTXHeaderTo() {
+		return radio.getTXHeaderTo();
+	}
+
+	int getTXHeaderFrom() {
+		return radio.getTXHeaderFrom();
+	}
+	
+	int getTXHeaderID() {
+		return radio.getTXHeaderID();
+	}
+
+	int getTXHeaderFlags() {
+		return radio.getTXHeaderFlags();
+	}
+	
+	int sampleRssi(){
+		return radio.sampleRssi();
+	}
+	
+	bool lastCrcOk(){
+		return radio.lastCrcOk();
+	}
+	
+	void setPayloadCRC(bool on){
+		radio.setPayloadCRC(on);
+	}
+	
+  	void setCheckCrc(bool checkOn){
+		radio.setCheckCrc(checkOn);
 	}
 }

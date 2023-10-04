@@ -1,5 +1,23 @@
 pyRadioHeadRF95
 ===============
+
+Fork of https://github.com/exmorse/pyRadioHeadRF95
+
+Extended for additional functionalities:
++ Set LoRa Sync Word
++ Set LoRa ID
++ Set Sender and Receiver ID
++ Set Implicit Header mode (currently only in transmit!!! correct receiving may not be possible)
++ Multiple LoRa Header Modes, includes headless and simple header mode
+
+ToDo:
++ Extend Readme
++ Implicit Header mode for rx mode
++ Description of headers, adaption of headers
+
+---------
+(original readme content)
+--------- 
 **pyRadioHeadRF95** is a Python wrapper for the use of *RH_RF95* class of the *RadioHead* library on a Raspberry Pi.
 
 The library is developed and tested using a Dragino LoRa shield.

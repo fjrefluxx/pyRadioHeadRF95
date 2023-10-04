@@ -2,17 +2,32 @@
 //
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2011 Mike McCauley
-// $Id: RHReliableDatagram.h,v 1.17 2016/04/04 01:40:12 mikem Exp $
+// $Id: RHReliableDatagram.h,v 1.18 2018/11/08 02:31:43 mikem Exp $
 
 #ifndef RHReliableDatagram_h
 #define RHReliableDatagram_h
 
 #include <RHDatagram.h>
 
-// The acknowledgement bit in the FLAGS
-// The top 4 bits of the flags are reserved for RadioHead. The lower 4 bits are reserved
-// for application layer use.
+/// The acknowledgement bit in the header FLAGS. This indicates if the payload is for an
+/// ack for a successfully received message.
 #define RH_FLAGS_ACK 0x80
+/// The retry bit in the header FLAGS. This indicates that the payload is a retry for a
+/// previously sent message.
+#define RH_FLAGS_RETRY 0x40
+
+/// This macro enables enhanced message deduplication behavior. This currently defaults
+/// to 0 (off), but this may change to default to 1 (on) in future releases. Consumers who
+/// want to enable this behavior should override this macro in their code and set it to 1.
+/// It is most useful where a transmitter periodically wakes up and starts to transmit
+/// starting again from the first sequence number.
+///
+/// Enhanced deduplication: Only messages containing the retry bit in the header
+/// FLAGS will be evaluated for deduplication. This ensures that only messages that are
+/// genuine retries will potentially be deduped. Note that this should not be enabled
+/// if you will receive messages from devices using older versions of this library that
+/// do not support the RETRY header. If you do, deduping of messages will be broken.
+#define RH_ENABLE_EXPLICIT_RETRY_DEDUP 0
 
 /// the default retry timeout in milliseconds
 #define RH_DEFAULT_TIMEOUT 200
